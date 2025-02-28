@@ -3,12 +3,29 @@ import { useVehicles } from "../../hooks/useVehicles";
 import VehicleCard from "./components/VehicleCard";
 import { useNavigate } from "react-router-dom";
 import VehicleCardSkeleton from "./components/VehicleCardSkeleton";
+import { SKELETONS, VEHICLE_INFO } from "../../constants";
 
-const VehicleListPage = () => {
+interface Props {
+  searchKey: string;
+}
+const VehicleListPage = ({ searchKey }: Props) => {
   const { data: vehicles, isLoading, error } = useVehicles();
   const navigate = useNavigate();
 
-  const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const normalizedSearchKey = searchKey.toLowerCase();
+
+  // Filter vehicles based on the search key matching specified fields
+  const filteredVehicles =
+    searchKey.length > 0
+      ? vehicles?.filter((vehicle) =>
+          VEHICLE_INFO.some((field) =>
+            vehicle[field as keyof typeof vehicle]
+              ?.toString()
+              .toLowerCase()
+              .includes(normalizedSearchKey)
+          )
+        )
+      : vehicles;
 
   if (error) return <Text>Error loading data</Text>;
 
@@ -20,10 +37,10 @@ const VehicleListPage = () => {
       padding={"10px"}
     >
       {isLoading &&
-        skeletons.map((skeleton) => {
+        SKELETONS.map((skeleton) => {
           return <VehicleCardSkeleton key={skeleton} />;
         })}
-      {vehicles?.map((vehicle) => (
+      {filteredVehicles?.map((vehicle) => (
         <VehicleCard
           key={vehicle.id}
           vehicle={vehicle}

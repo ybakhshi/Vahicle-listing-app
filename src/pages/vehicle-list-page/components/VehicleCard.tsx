@@ -7,7 +7,6 @@ interface Props {
 }
 
 const VehicleCard = ({ vehicle, onCardClick }: Props) => {
-  console.log("images");
   return (
     <Card
       borderRadius={5}

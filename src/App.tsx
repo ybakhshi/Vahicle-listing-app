@@ -3,8 +3,10 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import VehicleListPage from "./pages/vehicle-list-page/VehicleListPage";
 import VehicleDetailPage from "./pages/vehicle-detail-page/VehicleDetailPage";
+import { useState } from "react";
 
 function App() {
+  const [searchKey, setSearchKey] = useState<string>("");
   return (
     <Grid
       templateAreas={{
@@ -17,7 +19,7 @@ function App() {
       }}
     >
       <GridItem area={"nav"}>
-        <NavBar />
+        <NavBar onSearch={(searchKey) => setSearchKey(searchKey)} />
       </GridItem>
       <Show above="lg">
         <GridItem area={"aside"} paddingX={"5px"}>
@@ -27,7 +29,10 @@ function App() {
       <GridItem area={"main"}>
         <Router>
           <Routes>
-            <Route path="/" element={<VehicleListPage />} />
+            <Route
+              path="/"
+              element={<VehicleListPage searchKey={searchKey} />}
+            />
             <Route path="/vehicle/:id" element={<VehicleDetailPage />} />
           </Routes>
         </Router>
