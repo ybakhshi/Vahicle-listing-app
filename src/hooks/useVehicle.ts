@@ -14,5 +14,6 @@ export const useVehicle = (id: number) => {
   return useQuery({
     queryKey: ["vehicle", id],
     queryFn: () => fetchVehicle(id),
+    staleTime: 1 * 60 * 1000, // 1m
   });
 };
