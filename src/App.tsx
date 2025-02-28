@@ -1,5 +1,8 @@
 import { Button, Grid, GridItem, Show } from "@chakra-ui/react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import VehicleListPage from "./pages/vehicle-list-page/VehicleListPage";
+import VehicleDetailPage from "./pages/vehicle-detail-page/VehicleDetailPage";
 
 function App() {
   return (
@@ -21,7 +24,14 @@ function App() {
           Asid
         </GridItem>
       </Show>
-      <GridItem area={"main"}> main </GridItem>
+      <GridItem area={"main"}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<VehicleListPage />} />
+            <Route path="/vehicle/:id" element={<VehicleDetailPage />} />
+          </Routes>
+        </Router>
+      </GridItem>
     </Grid>
   );
 }
