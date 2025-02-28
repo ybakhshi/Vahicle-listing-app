@@ -4,9 +4,11 @@ import NavBar from "./components/NavBar";
 import VehicleListPage from "./pages/vehicle-list-page/VehicleListPage";
 import VehicleDetailPage from "./pages/vehicle-detail-page/VehicleDetailPage";
 import { useState } from "react";
+import SideBar from "./components/SideBar";
 
 function App() {
   const [searchKey, setSearchKey] = useState<string>("");
+  const [sortField, setSortField] = useState<string>("");
   return (
     <Grid
       templateAreas={{
@@ -22,8 +24,8 @@ function App() {
         <NavBar onSearch={(searchKey) => setSearchKey(searchKey)} />
       </GridItem>
       <Show above="lg">
-        <GridItem area={"aside"} paddingX={"5px"}>
-          Asid
+        <GridItem area={"aside"} paddingX={"5px"} paddingY={"5px"}>
+          <SideBar onSelectSortOrder={(sortField) => setSortField(sortField)} />
         </GridItem>
       </Show>
       <GridItem area={"main"}>
@@ -31,7 +33,13 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={<VehicleListPage searchKey={searchKey} />}
+              element={
+                <VehicleListPage
+                  searchKey={searchKey}
+                  sortField={sortField}
+                  setSortField={setSortField}
+                />
+              }
             />
             <Route path="/vehicle/:id" element={<VehicleDetailPage />} />
           </Routes>
