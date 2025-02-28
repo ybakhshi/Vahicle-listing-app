@@ -1,13 +1,15 @@
 import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import { useVehicles } from "../../hooks/useVehicles";
-import VehicleCard from "../vehicle-detail-page/components/VehicleCard";
+import VehicleCard from "./components/VehicleCard";
 import { useNavigate } from "react-router-dom";
+import VehicleCardSkeleton from "./components/VehicleCardSkeleton";
 
 const VehicleListPage = () => {
-  const { data, isLoading, error } = useVehicles();
+  const { data: vehicles, isLoading, error } = useVehicles();
   const navigate = useNavigate();
 
-  if (isLoading) return <Spinner />;
+  const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
   if (error) return <Text>Error loading data</Text>;
 
   //to make displaying images responsive, use columns:
@@ -17,7 +19,11 @@ const VehicleListPage = () => {
       spacing={10}
       padding={"10px"}
     >
-      {data?.map((vehicle) => (
+      {isLoading &&
+        skeletons.map((skeleton) => {
+          return <VehicleCardSkeleton key={skeleton} />;
+        })}
+      {vehicles?.map((vehicle) => (
         <VehicleCard
           key={vehicle.id}
           vehicle={vehicle}
