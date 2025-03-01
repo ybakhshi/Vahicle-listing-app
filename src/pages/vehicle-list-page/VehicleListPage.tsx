@@ -13,16 +13,16 @@ import VehicleCardSkeleton from "./components/VehicleCardSkeleton";
 import { SKELETONS, VEHICLE_INFO } from "../../constants";
 import { useMemo, useState } from "react";
 import _ from "lodash";
+import { useSort } from "../../contexts/SortContext";
 
 interface Props {
   searchKey: string;
-  sortField: string;
-  setSortField: React.Dispatch<React.SetStateAction<string>>;
 }
-const VehicleListPage = ({ searchKey, sortField, setSortField }: Props) => {
+const VehicleListPage = ({ searchKey }: Props) => {
+  const { sortField, sortDirection } = useSort();
   const pageSize = 7;
   const [page, setPage] = useState(1);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
   const { data: vehicles, isLoading, error } = useVehicles({ page, pageSize });
   const navigate = useNavigate();
 
@@ -41,21 +41,10 @@ const VehicleListPage = ({ searchKey, sortField, setSortField }: Props) => {
   }, [vehicles, searchKey]);
 
   const sortedVehicles = useMemo(() => {
-    if (!sortField) return filteredVehicles; // Return unsorted if no sort field is selected
-    return _.orderBy(filteredVehicles, [sortField], [sortDirection]);
+    if (!filteredVehicles) return [];
+    if (!sortField) return filteredVehicles; // Return unsorted if no sort field selected
+    return _.orderBy(vehicles, [sortField], [sortDirection]);
   }, [filteredVehicles, sortField, sortDirection]);
-
-  // Handle sorting toggle
-  const handleSort = (field: string) => {
-    if (sortField === field) {
-      // Toggle between 'asc' and 'desc' if the same field is clicked
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      // Set new field and default to 'asc'
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
 
   if (error) return <Text>Error loading data</Text>;
 

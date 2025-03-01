@@ -8,7 +8,6 @@ import SideBar from "./components/SideBar";
 
 function App() {
   const [searchKey, setSearchKey] = useState<string>("");
-  const [sortField, setSortField] = useState<string>("");
   return (
     <Grid
       templateAreas={{
@@ -25,7 +24,7 @@ function App() {
       </GridItem>
       <Show above="lg">
         <GridItem area={"aside"} paddingX={"5px"} paddingY={"5px"}>
-          <SideBar onSelectSortOrder={(sortField) => setSortField(sortField)} />
+          <SideBar />
         </GridItem>
       </Show>
       <GridItem area={"main"}>
@@ -33,13 +32,7 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={
-                <VehicleListPage
-                  searchKey={searchKey}
-                  sortField={sortField}
-                  setSortField={setSortField}
-                />
-              }
+              element={<VehicleListPage searchKey={searchKey} />}
             />
             <Route path="/vehicle/:id" element={<VehicleDetailPage />} />
           </Routes>
