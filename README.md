@@ -77,6 +77,15 @@ Clone the repository
 git clone https://github.com/ybakhshi/Vahicle-listing-app
 cd vehicle-listing-app
 
+RUNNING THE APP USING DOCKER:
+
+docker build -t vehicle-listing-app .
+docker run -p 5173:5173 vehicle-listing-app
+
+The app should be accessible in following urls:
+➜ Local: http://localhost:5173/
+➜ Network: http://172.17.0.2:5173/
+
 Install dependencies
 
 npm install
