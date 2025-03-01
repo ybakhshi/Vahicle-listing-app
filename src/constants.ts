@@ -17,3 +17,5 @@ export const sortOptions = [
   { value: "model", label: "Modal" },
   { value: "color", label: "Color" },
 ];
+
+export const pageSize = 7;

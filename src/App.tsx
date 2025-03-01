@@ -23,7 +23,7 @@ function App() {
         <NavBar onSearch={(searchKey) => setSearchKey(searchKey)} />
       </GridItem>
       <Show above="lg">
-        <GridItem area={"aside"} paddingX={"5px"} paddingY={"5px"}>
+        <GridItem area={"aside"} paddingX={"5px"} paddingY={"5px"} mt={5}>
           <SideBar />
         </GridItem>
       </Show>

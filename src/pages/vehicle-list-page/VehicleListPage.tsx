@@ -10,17 +10,19 @@ import { useVehicles } from "../../hooks/useVehicles";
 import VehicleCard from "./components/VehicleCard";
 import { useNavigate } from "react-router-dom";
 import VehicleCardSkeleton from "./components/VehicleCardSkeleton";
-import { SKELETONS, VEHICLE_INFO } from "../../constants";
+import { pageSize, SKELETONS, VEHICLE_INFO } from "../../constants";
 import { useMemo, useState } from "react";
 import _ from "lodash";
 import { useSort } from "../../contexts/SortContext";
+import ApplyFilters from "./components/ApplyFilters";
 
 interface Props {
   searchKey: string;
 }
+
 const VehicleListPage = ({ searchKey }: Props) => {
+  const [conditionFilter, setConditionFilter] = useState("");
   const { sortField, sortDirection } = useSort();
-  const pageSize = 7;
   const [page, setPage] = useState(1);
 
   const { data: vehicles, isLoading, error } = useVehicles({ page, pageSize });
@@ -28,9 +30,20 @@ const VehicleListPage = ({ searchKey }: Props) => {
 
   const normalizedSearchKey = searchKey.toLowerCase();
 
+  // Apply Filtering First
   const filteredVehicles = useMemo(() => {
     if (!vehicles) return [];
-    return vehicles.filter((vehicle) =>
+    return vehicles.filter(
+      (vehicle) =>
+        !conditionFilter ||
+        vehicle.condition.toLowerCase() === conditionFilter.toLowerCase()
+    );
+  }, [vehicles, conditionFilter]);
+
+  // Apply Searching Next
+  const foundVehicles = useMemo(() => {
+    if (!filteredVehicles) return [];
+    return filteredVehicles.filter((vehicle) =>
       VEHICLE_INFO.some((field) =>
         vehicle[field as keyof typeof vehicle]
           ?.toString()
@@ -38,19 +51,22 @@ const VehicleListPage = ({ searchKey }: Props) => {
           .includes(normalizedSearchKey)
       )
     );
-  }, [vehicles, searchKey]);
+  }, [filteredVehicles, searchKey]);
 
+  // Apply Sorting Last
   const sortedVehicles = useMemo(() => {
-    if (!filteredVehicles) return [];
-    if (!sortField) return filteredVehicles; // Return unsorted if no sort field selected
-    return _.orderBy(vehicles, [sortField], [sortDirection]);
-  }, [filteredVehicles, sortField, sortDirection]);
+    if (!foundVehicles) return [];
+    if (!sortField) return foundVehicles; // No sorting applied
+    return _.orderBy(foundVehicles, [sortField], [sortDirection]);
+  }, [foundVehicles, sortField, sortDirection]);
 
   if (error) return <Text>Error loading data</Text>;
 
-  //to make displaying images responsive, use columns:
   return (
-    <VStack>
+    <VStack marginTop={5}>
+      <ApplyFilters
+        onConditionChange={(filter) => setConditionFilter(filter)}
+      />
       <SimpleGrid
         columns={{ sm: 1, md: 2, lg: 3, xl: 4 }}
         spacing={10}
